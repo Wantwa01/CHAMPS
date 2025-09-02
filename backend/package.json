@@ -5,7 +5,10 @@
     "scripts": {
         "test": "echo \"Error: no test specified\" && exit 1",
         "dev": "nodemon src/server.js",
-        "start": "node src/server.js"
+        "start": "node src/server.js",
+        "seed": "node src/scripts/seed.js",
+        "seed-doctors": "node src/scripts/seed-doctors.js",
+        "test-connection": "node test-connection.js"
     },
     "type": "module",
     "keywords": [],
@@ -19,6 +22,7 @@
         "express": "^5.1.0",
         "express-rate-limit": "^8.0.1",
         "helmet": "^8.1.0",
+        "http-status": "^2.1.0",
         "joi": "^18.0.1",
         "jsonwebtoken": "^9.0.2",
         "mongoose": "^8.18.0",

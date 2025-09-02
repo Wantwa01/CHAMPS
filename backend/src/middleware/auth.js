@@ -1,33 +1,29 @@
-// src/middleware/auth.js
-const jwt = require('jsonwebtoken');
-const Staff = require('../models/Staff');
-const Patient = require('../models/Patient');
+import httpStatus from 'http-status';
+import { verifyToken } from '../services/token.service.js';
 
-async function auth(required = true) {
-  return async (req, res, next) => {
+export const auth = (req, res, next) => {
     const header = req.headers.authorization || '';
     const token = header.startsWith('Bearer ') ? header.slice(7) : null;
-    if (!token) {
-      if (!required) return next();
-      return res.status(401).json({ success: false, message: 'No token provided' });
-    }
+    if (!token) return res.status(401).json({ message: 'Missing token' });
     try {
-      const payload = jwt.verify(token, process.env.JWT_SECRET);
-      // payload should include { id, role, type } where type is 'staff' or 'patient'
-      if (payload.type === 'staff') {
-        const staff = await Staff.findById(payload.id).select('-passwordHash');
-        if (!staff || !staff.isActive) return res.status(401).json({ success:false, message:'Invalid staff token' });
-        req.user = { id: staff._id, role: staff.role, type: 'staff', raw: staff };
-      } else {
-        const patient = await Patient.findById(payload.id);
-        if (!patient) return res.status(401).json({ success:false, message:'Invalid patient token' });
-        req.user = { id: patient._id, role: 'patient', type: 'patient', raw: patient };
-      }
-      next();
+        const payload = verifyToken(token);
+        req.user = payload;
+        next();
     } catch (err) {
-      return res.status(401).json({ success:false, message:'Invalid token' });
+        return res.status(401).json({ message: 'Invalid/expired token' });
     }
-  };
-}
+};
 
-module.exports = { auth };
+export const requireRoles = (...roles) => (req, res, next) => {
+    if (!req.user || !roles.includes(req.user.role)) {
+        return res.status(403).json({ message: 'Forbidden' });
+    }
+    next();
+};
+
+export const isUnder18 = (dob) => {
+    const now = new Date();
+    const d = new Date(dob);
+    d.setFullYear(d.getFullYear() + 18);
+    return d > now; // true if under 18
+};

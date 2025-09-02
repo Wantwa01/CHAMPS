@@ -1,34 +1,49 @@
-// src/models/Staff.js
-const { Schema, model } = require('mongoose');
-const bcrypt = require('bcryptjs');
-const { StaffRoles } = require('./enums');
+import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
+import { ROLES } from '../utils/roles.js';
 
-const StaffSchema = new Schema({
-  name: { type: String, required: true, trim: true },
-  email: { type: String, required: true, unique: true, lowercase: true, index: true },
-  phone: { type: String },
-  role: { type: String, enum: StaffRoles, default: 'receptionist', index: true },
-  department: { type: String }, // OPD/IPD/ED/Antenatal/Theatre
-  specialty: { type: String },
-  passwordHash: { type: String, required: true },
-  online: { type: Boolean, default: false },
-  isActive: { type: Boolean, default: true }, // soft-delete support
-  createdBy: { type: Schema.Types.ObjectId, ref: 'Staff' }, // who created the account
+const StaffSchema = new mongoose.Schema({
+    role: { type: String, enum: [ROLES.STAFF, ROLES.SUPERADMIN], required: true },
+
+    username: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    phone: { type: String, required: true, unique: true, trim: true },
+    email: { type: String, trim: true, lowercase: true },
+
+    passwordHash: { type: String }, // Will be set by pre-save middleware
+
+    otpCode: { type: String },
+    otpExpiry: { type: Date },
+    otpVerified: { type: Boolean, default: false },
+
+    isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
-// Set password and compare helpers
-StaffSchema.methods.setPassword = async function (plain) {
-  this.passwordHash = await bcrypt.hash(plain, 10);
-};
-StaffSchema.methods.comparePassword = function (plain) {
-  return bcrypt.compare(plain, this.passwordHash);
+// Virtual for password (not stored in DB)
+StaffSchema.virtual('password')
+    .set(function(password) {
+        this._password = password;
+    })
+    .get(function() {
+        return this._password;
+    });
+
+// Pre-save middleware to hash password
+StaffSchema.pre('save', async function(next) {
+    if (this.isModified('_password') || this.isNew) {
+        if (this._password) {
+            this.passwordHash = await this.constructor.hashPassword(this._password);
+        }
+    }
+    next();
+});
+
+StaffSchema.methods.comparePassword = function(plain) {
+    return bcrypt.compare(plain, this.passwordHash);
 };
 
-// Simple toJSON to hide passwordHash
-StaffSchema.methods.toPublic = function () {
-  const obj = this.toObject();
-  delete obj.passwordHash;
-  return obj;
+StaffSchema.statics.hashPassword = async function(plain) {
+    const salt = await bcrypt.genSalt(10);
+    return bcrypt.hash(plain, salt);
 };
 
-module.exports = model('Staff', StaffSchema);
+export default mongoose.model('Staff', StaffSchema);
