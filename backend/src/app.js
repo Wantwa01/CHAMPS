@@ -24,7 +24,7 @@ app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.get('/', (req, res) => res.json({ message: 'WeziMediCare API is running' }));
 
 // Routes (use routes index)
-app.use('/', routes);
+app.use('/api', routes);
 
 // 404 handler
 app.use((req, res) => res.status(404).json({ message: 'Not found' }));

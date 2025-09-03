@@ -8,8 +8,10 @@
         "start": "node src/server.js",
         "seed": "node src/scripts/seed.js",
         "seed-doctors": "node src/scripts/seed-doctors.js",
+        "seed-admin": "node src/seed/seedSystemAdmin.js",
         "test-connection": "node test-connection.js"
     },
+
     "type": "module",
     "keywords": [],
     "author": "",

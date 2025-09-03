@@ -5,7 +5,7 @@ import { ROLES } from '../utils/roles.js';
 const PatientSchema = new mongoose.Schema({
     role: { type: String, enum: [ROLES.PATIENT_ADULT, ROLES.PATIENT_UNDERAGE, ROLES.GUARDIAN], required: true },
 
-    username: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    username: { type: String, required: true, unique: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
 
     // nationality and identifiers

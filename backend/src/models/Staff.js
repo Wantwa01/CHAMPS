@@ -4,17 +4,14 @@ import { ROLES } from '../utils/roles.js';
 
 const StaffSchema = new mongoose.Schema({
     role: { type: String, enum: [ROLES.STAFF, ROLES.SUPERADMIN], required: true },
-
+    staffRole: { type: String, enum: ['doctor', 'nurse', 'receptionist', 'driver', 'ambulance', 'admin'], default: 'admin' },
     username: { type: String, required: true, unique: true, lowercase: true, trim: true },
     phone: { type: String, required: true, unique: true, trim: true },
     email: { type: String, trim: true, lowercase: true },
-
-    passwordHash: { type: String }, // Will be set by pre-save middleware
-
+    passwordHash: { type: String },
     otpCode: { type: String },
     otpExpiry: { type: Date },
     otpVerified: { type: Boolean, default: false },
-
     isActive: { type: Boolean, default: true }
 }, { timestamps: true });
 
@@ -27,14 +24,16 @@ StaffSchema.virtual('password')
         return this._password;
     });
 
-// Pre-save middleware to hash password
+// Pre-save middleware to hash password when virtual is set
 StaffSchema.pre('save', async function(next) {
-    if (this.isModified('_password') || this.isNew) {
+    try {
         if (this._password) {
             this.passwordHash = await this.constructor.hashPassword(this._password);
         }
+        next();
+    } catch (err) {
+        next(err);
     }
-    next();
 });
 
 StaffSchema.methods.comparePassword = function(plain) {
