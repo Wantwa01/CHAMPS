@@ -7,8 +7,13 @@ import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import { AuthProvider, useAuth } from './components/DashboardApp';
 import DashboardWrapper from './components/DashboardWrapper';
-import { StethoscopeIcon, AmbulanceIcon, CalendarIcon, ChatIcon, MapPinIcon, UserIcon } from './components/Icons';
+import { StethoscopeIcon, AmbulanceIcon, CalendarIcon, ChatIcon, MapPinIcon, UserIcon, MapIcon } from './components/Icons';
+import Logo from './components/Logo';
 import { User, Role, AmbulanceRequest } from './types';
+import DirectionsModal from './components/DirectionsModal';
+import AmbulanceModal from './components/AmbulanceModal';
+import BookingModal from './components/BookingModal';
+import CustomerSupportModal from './components/CustomerSupportModal';
 
 export type Language = 'EN' | 'CH' | 'TU';
 export type Theme = 'light' | 'dark';
@@ -22,10 +27,10 @@ const translations = {
     logout: 'Logout',
     heroTitle: 'Personalized Care, Available Anytime.',
     heroSubtitle: 'Welcome to Wezi Medical Centre. We provide high-quality medical care with a focus on patient well-being. How can we help you today?',
-    symptomChecker: 'Symptom Checker',
+    directions: 'Get Directions',
     callAmbulance: 'Call Ambulance',
     scheduleAppointment: 'Schedule Appointment',
-    contactSupport: 'Contact Support',
+    contactSupport: 'Navigation Help',
     findDepartment: 'Find Department',
     myWeziPortal: 'MyWezi Portal',
     teamTitle: 'Meet Our Team',
@@ -44,8 +49,8 @@ const translations = {
     copyright: '© 2024 Wezi Medical Centre. All rights reserved.',
     serviceHubTitle: 'Patient Service Hub',
     aiAssistantTitle: 'AI-Powered Assistant',
-    aiDisclaimer: 'This is an AI assistant for general inquiries and is not a substitute for professional medical advice.',
-    aiPlaceholder: 'Ask about our services...',
+    aiDisclaimer: 'This AI assistant guides patients to the right departments and services. It does not provide medical advice - please consult qualified medical professionals for your specific needs.',
+    aiPlaceholder: 'Ask about departments, services, or contact numbers...',
     send: 'Send',
     departmentDirectoryTitle: 'Department Directory',
     // Login page translations
@@ -71,6 +76,36 @@ const translations = {
     loginWithGoogle: 'Continue with Google',
     loginNoAccount: "Don't have an account?",
     loginSignUp: 'Sign up',
+    // Modal translations
+    directionsModalTitle: 'Get Directions to Wezi Medical Centre',
+    directionsModalSubtitle: 'Find the best route to our hospital from your current location',
+    getCurrentLocation: 'Get Current Location',
+    hospitalAddress: 'Wezi Medical Centre, Mzuzu, Malawi',
+    openInMaps: 'Open in Maps',
+    ambulanceModalTitle: 'Emergency Ambulance Request',
+    ambulanceModalSubtitle: 'Confirm your emergency request and track the ambulance',
+    confirmAmbulance: 'Confirm Ambulance Request',
+    ambulanceRequested: 'Ambulance Requested',
+    estimatedArrival: 'Estimated Arrival',
+    ambulanceLocation: 'Ambulance Location',
+    trackingNumber: 'Tracking Number',
+    bookingModalTitle: 'Book an Appointment',
+    bookingModalSubtitle: 'Schedule your appointment and make payment',
+    selectDate: 'Select Date',
+    selectTime: 'Select Time',
+    selectDoctor: 'Select Doctor',
+    selectService: 'Select Service',
+    patientName: 'Patient Name',
+    patientPhone: 'Patient Phone',
+    patientEmail: 'Patient Email',
+    reasonForVisit: 'Reason for Visit',
+    paymentMethod: 'Payment Method',
+    totalAmount: 'Total Amount',
+    bookAppointment: 'Book Appointment',
+    processingPayment: 'Processing Payment...',
+    appointmentBooked: 'Appointment Booked Successfully',
+    downloadReceipt: 'Download Receipt',
+    receiptDownloaded: 'Receipt Downloaded',
   },
   CH: {
     headerTitle: 'Wezi Medical Centre',
@@ -79,7 +114,7 @@ const translations = {
     logout: 'Tulukani',
     heroTitle: 'Chithandizo Chamunthu Payekha, Chopezeka Nthawi Zonse.',
     heroSubtitle: 'Takulandirani ku Wezi Medical Centre. Timapereka chithandizo chamankhwala chapamwamba poganizira kwambiri za odwala. Tingakuthandizeni bwanji lero?',
-    symptomChecker: 'Wowunika Zizindikiro',
+    directions: 'Pezani Njira',
     callAmbulance: 'Itanani Ambulansi',
     scheduleAppointment: 'Sunganitsani Nthawi',
     contactSupport: 'Funsani Wothandizira',
@@ -101,8 +136,8 @@ const translations = {
     copyright: '© 2024 Wezi Medical Centre. Ufulu wonse ndi wotetezedwa.',
     serviceHubTitle: 'Malo Othandizira Odwala',
     aiAssistantTitle: 'Mothandizi Wanzeru Wopangidwa',
-    aiDisclaimer: 'Uyu ndi wothandizira wa AI pa mafunso wamba ndipo salowa m\'malo mwa upangiri wa akatswiri azachipatala.',
-    aiPlaceholder: 'Funsani za ntchito zathu...',
+    aiDisclaimer: 'Uyu ndi wothandizira wa AI womwe amatsogolera odwala ku madipatimenti ndi ntchito zoyenera. Salopa malingaliro a mankhwala - chonde funsani akatswiri azachipatala odzipereka pa zofunika zanu.',
+    aiPlaceholder: 'Funsani za madipatimenti, ntchito, kapena manambala a foni...',
     send: 'Tuma',
     departmentDirectoryTitle: 'Kalozera wa Madipatimenti',
     // Login page translations
@@ -136,10 +171,10 @@ const translations = {
     logout: 'Tulukani',
     heroTitle: 'Chithandizo Chamunthu Payekha, Chopezeka Nthawi Zonse.',
     heroSubtitle: 'Takulandirani ku Wezi Medical Centre. Timapereka chithandizo chamankhwala chapamwamba poganizira kwambiri za odwala. Tingakuthandizeni bwanji lero?',
-    symptomChecker: 'Wowunika Zizindikiro',
+    directions: 'Pezani Njira',
     callAmbulance: 'Itanani Ambulansi',
     scheduleAppointment: 'Sunganitsani Nthawi',
-    contactSupport: 'Funsani Wothandizira',
+    contactSupport: 'Thandizo la Njira',
     findDepartment: 'Pezani Dipatimenti',
     myWeziPortal: 'MyWezi Portal',
     teamTitle: 'Kumanani ndi Gulu Lathu',
@@ -158,8 +193,8 @@ const translations = {
     copyright: '© 2024 Wezi Medical Centre. Ufulu wonse ndi wotetezedwa.',
     serviceHubTitle: 'Malo Othandizira Odwala',
     aiAssistantTitle: 'Mothandizi Wanzeru Wopangidwa',
-    aiDisclaimer: 'Uyu ndi wothandizira wa AI pa mafunso wamba ndipo salowa m\'malo mwa upangiri wa akatswiri azachipatala.',
-    aiPlaceholder: 'Funsani za ntchito zathu...',
+    aiDisclaimer: 'Uyu ndi wothandizira wa AI womwe amatsogolera odwala ku madipatimenti ndi ntchito zoyenera. Salopa malingaliro a mankhwala - chonde funsani akatswiri azachipatala odzipereka pa zofunika zanu.',
+    aiPlaceholder: 'Funsani za madipatimenti, ntchito, kapena manambala a foni...',
     send: 'Tuma',
     departmentDirectoryTitle: 'Kalozera wa Madipatimenti',
     // Login page translations
@@ -248,26 +283,34 @@ const QuickActionCard: React.FC<{
   icon: React.ReactNode;
   title: string;
   isEmergency?: boolean;
-}> = ({ icon, title, isEmergency = false }) => {
+  onClick?: () => void;
+}> = ({ icon, title, isEmergency = false, onClick }) => {
   const textColor = isEmergency ? 'text-red-500 dark:text-red-400' : 'text-slate-800 dark:text-slate-200';
   const iconBg = isEmergency ? 'bg-red-50 dark:bg-red-900/50' : 'bg-blue-50 dark:bg-blue-900/50';
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl dark:shadow-slate-900/50 dark:hover:shadow-slate-700/50 transition-shadow duration-300 p-6 sm:p-8 flex flex-col items-center justify-center text-center gap-4">
+    <button
+      onClick={onClick}
+      className="bg-white dark:bg-slate-800 rounded-2xl shadow-md hover:shadow-xl dark:shadow-slate-900/50 dark:hover:shadow-slate-700/50 transition-all duration-300 p-6 sm:p-8 flex flex-col items-center justify-center text-center gap-4 w-full hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 dark:focus:ring-offset-slate-800"
+    >
       <div className={`rounded-full p-4 ${iconBg}`}>
         {icon}
       </div>
       <h3 className={`text-lg font-semibold ${textColor}`}>{title}</h3>
-    </div>
+    </button>
   );
 };
 
 const SecondaryAction: React.FC<{
   icon: React.ReactNode;
   label: string;
-}> = ({ icon, label }) => {
+  onClick?: () => void;
+}> = ({ icon, label, onClick }) => {
   return (
-    <button className="bg-slate-100 hover:bg-slate-300 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 font-medium rounded-full px-5 py-3 flex items-center gap-2.5 transition-colors duration-200">
+    <button 
+      onClick={onClick}
+      className="bg-slate-100 hover:bg-slate-300 text-slate-700 dark:bg-slate-700 dark:hover:bg-slate-600 dark:text-slate-300 font-medium rounded-full px-5 py-3 flex items-center gap-2.5 transition-colors duration-200"
+    >
       {icon}
       <span>{label}</span>
     </button>
@@ -283,6 +326,13 @@ const AppContent: React.FC = () => {
   const [userMessage, setUserMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   
+  // Modal states
+  const [showDirectionsModal, setShowDirectionsModal] = useState(false);
+  const [showAmbulanceModal, setShowAmbulanceModal] = useState(false);
+  const [showBookingModal, setShowBookingModal] = useState(false);
+  const [showCustomerSupportModal, setShowCustomerSupportModal] = useState(false);
+  const [isFromBooking, setIsFromBooking] = useState(false);
+  
   const [quickActionsRef, areQuickActionsVisible] = useScrollAnimation<HTMLElement>();
   const [secondaryActionsRef, areSecondaryActionsVisible] = useScrollAnimation<HTMLElement>();
   const [serviceHubRef, isServiceHubVisible] = useScrollAnimation<HTMLElement>();
@@ -291,9 +341,9 @@ const AppContent: React.FC = () => {
   const t = translations[language];
 
   let ai: GoogleGenAI | null = null;
-  if (process.env.API_KEY) {
-      ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
-  }
+  // Initialize Gemini AI with the provided API key
+  const GEMINI_API_KEY = 'AIzaSyD3PiT1heCzDzjqOwH5yIpA_MsDGsil5Jk';
+  ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
   
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
@@ -328,12 +378,17 @@ const AppContent: React.FC = () => {
 
   const handleLoginSuccess = () => {
     setIsLoggedIn(true);
-    setCurrentPage('dashboard');
+    if (isFromBooking) {
+      setIsFromBooking(false);
+      setShowBookingModal(true);
+    } else {
+      setCurrentPage('dashboard');
+    }
   };
 
   const handleRegistrationSuccess = () => {
-    setIsLoggedIn(true);
-    setCurrentPage('dashboard');
+    // Don't auto-login after registration, redirect to login page
+    setCurrentPage('login');
   };
 
   const handleBackToHome = () => {
@@ -362,7 +417,29 @@ const AppContent: React.FC = () => {
         model: "gemini-2.5-flash",
         contents: userMessage,
         config: {
-          systemInstruction: "You are a helpful assistant for Wezi Medical Centre, a hospital in Mzuzu, Malawi. Your role is to answer patient questions about our services and department locations. Do not provide medical advice. Be friendly, concise, and professional. The available departments are: Emergency (Ground Floor, West Wing), Outpatient (OPD) (Ground Floor, East Wing), Admissions (First Floor, Main Lobby), Antenatal Care (Second Floor, Women's Health Wing), Surgical Theatre (Third Floor, Restricted Access).",
+          systemInstruction: `You are a helpful patient guidance assistant for Wezi Medical Centre, a hospital in Mzuzu, Malawi. Your primary role is to guide patients to the right departments and provide contact information when they need counseling or other services.
+
+IMPORTANT: Do NOT provide medical advice, diagnoses, or treatment recommendations. Your job is to direct patients to the appropriate medical professionals.
+
+Your responsibilities:
+1. Guide patients to the correct department based on their needs
+2. Provide contact numbers for specific services
+3. Direct patients to counseling services and mental health support
+4. Explain where to go for different types of care
+5. Be friendly, professional, and helpful
+
+Available Departments and Services:
+- Emergency Department: Ground Floor, West Wing (24/7) - Call: +265 1 123 456
+- Outpatient Department (OPD): Ground Floor, East Wing - Call: +265 1 123 457
+- Admissions/Inpatient: First Floor, Main Lobby - Call: +265 1 123 458
+- Antenatal Care: Second Floor, Women's Health Wing - Call: +265 1 123 459
+- Surgical Theatre: Third Floor, Restricted Access - Call: +265 1 123 460
+- Mental Health & Counseling: Second Floor, East Wing - Call: +265 1 123 461
+- Pharmacy: Ground Floor, Near Reception - Call: +265 1 123 462
+- Laboratory: Ground Floor, Near Reception - Call: +265 1 123 463
+- Radiology: Basement Level - Call: +265 1 123 464
+
+For counseling and mental health support, direct patients to the Mental Health & Counseling department or provide the contact number. Always encourage patients to speak with qualified medical professionals for their specific needs.`,
         },
       });
       
@@ -389,6 +466,7 @@ const AppContent: React.FC = () => {
           onLoginSuccess={handleLoginSuccess}
           onBackToHome={handleBackToHome}
           onSignUp={handleSignUp}
+          isFromBooking={isFromBooking}
         />
       );
     }
@@ -422,11 +500,16 @@ const AppContent: React.FC = () => {
         toggleTheme={toggleTheme}
         isLoggedIn={isLoggedIn}
         toggleLogin={toggleLogin}
+        onBookNow={() => setShowBookingModal(true)}
       />
       <main className="container mx-auto px-4 py-16 sm:py-20 md:py-24 overflow-x-hidden">
         {/* Hero Section */}
         <section className="text-center mb-20 md:mb-24">
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight mb-4 animate-fade-in-up">
+          {/* Company Logo */}
+          <div className="flex justify-center mb-8 animate-fade-in-up">
+            <Logo size="lg" theme={theme} />
+          </div>
+          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 dark:text-slate-100 leading-tight mb-4 animate-fade-in-up animation-delay-200">
             {t.heroTitle}
           </h1>
           <p className="max-w-3xl mx-auto text-slate-600 dark:text-slate-400 text-lg animate-fade-in-up animation-delay-300">
@@ -439,9 +522,22 @@ const AppContent: React.FC = () => {
           ref={quickActionsRef} 
           className={`grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto mb-20 md:mb-24 transition-all duration-700 ease-out ${areQuickActionsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
-          <QuickActionCard icon={<StethoscopeIcon />} title={t.symptomChecker} />
-          <QuickActionCard icon={<AmbulanceIcon />} title={t.callAmbulance} isEmergency />
-          <QuickActionCard icon={<CalendarIcon />} title={t.scheduleAppointment} />
+          <QuickActionCard 
+            icon={<MapIcon />} 
+            title={t.directions} 
+            onClick={() => setShowDirectionsModal(true)}
+          />
+          <QuickActionCard 
+            icon={<AmbulanceIcon />} 
+            title={t.callAmbulance} 
+            isEmergency 
+            onClick={() => setShowAmbulanceModal(true)}
+          />
+          <QuickActionCard 
+            icon={<CalendarIcon />} 
+            title={t.scheduleAppointment} 
+            onClick={() => setShowBookingModal(true)}
+          />
         </section>
 
         {/* Secondary Actions Section */}
@@ -449,9 +545,21 @@ const AppContent: React.FC = () => {
           ref={secondaryActionsRef} 
           className={`flex flex-wrap justify-center items-center gap-4 mb-20 md:mb-24 transition-all duration-700 ease-out delay-200 ${areSecondaryActionsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
-          <SecondaryAction icon={<ChatIcon />} label={t.contactSupport} />
-          <SecondaryAction icon={<MapPinIcon />} label={t.findDepartment} />
-          <SecondaryAction icon={<UserIcon />} label={t.myWeziPortal} />
+          <SecondaryAction 
+            icon={<ChatIcon />} 
+            label="Navigation Help" 
+            onClick={() => setShowCustomerSupportModal(true)}
+          />
+          <SecondaryAction 
+            icon={<MapPinIcon />} 
+            label={t.findDepartment} 
+            onClick={() => setShowDirectionsModal(true)}
+          />
+          <SecondaryAction 
+            icon={<UserIcon />} 
+            label={t.myWeziPortal} 
+            onClick={() => setCurrentPage('login')}
+          />
         </section>
 
         {/* Patient Service Hub Section */}
@@ -531,6 +639,37 @@ const AppContent: React.FC = () => {
 
       </main>
       <Footer t={t} />
+
+      {/* Modals */}
+      <DirectionsModal
+        isOpen={showDirectionsModal}
+        onClose={() => setShowDirectionsModal(false)}
+        translations={t}
+      />
+
+      <AmbulanceModal
+        isOpen={showAmbulanceModal}
+        onClose={() => setShowAmbulanceModal(false)}
+        translations={t}
+      />
+
+      <BookingModal
+        isOpen={showBookingModal}
+        onClose={() => setShowBookingModal(false)}
+        translations={t}
+        isLoggedIn={isLoggedIn}
+        onLoginRequired={() => {
+          setShowBookingModal(false);
+          setIsFromBooking(true);
+          setCurrentPage('login');
+        }}
+      />
+
+      <CustomerSupportModal
+        isOpen={showCustomerSupportModal}
+        onClose={() => setShowCustomerSupportModal(false)}
+        translations={t}
+      />
     </div>
   );
 };

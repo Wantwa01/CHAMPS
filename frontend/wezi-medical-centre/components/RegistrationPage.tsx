@@ -3,6 +3,7 @@ import { Language, Theme } from '../App';
 import { useAuth } from './DashboardApp';
 import { authService, AdultRegistrationData, GuardianRegistrationData } from '../services/authService';
 import { UserIcon, LockIcon, PhoneIcon, SunIcon, MoonIcon, ArrowRightIcon, XIcon } from './Icons';
+import Logo from './Logo';
 
 interface RegistrationPageProps {
   language: Language;
@@ -133,6 +134,8 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
         await authService.registerGuardian(guardianData);
       }
       
+      // Show success message and redirect to login
+      alert('Registration successful! Please log in with your credentials.');
       onRegistrationSuccess();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Registration failed');
@@ -198,9 +201,9 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
           <div className="flex items-center justify-between h-16">
             <button
               onClick={onBackToLogin}
-              className="text-xl font-bold text-slate-900 dark:text-slate-100 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+              className="hover:opacity-80 transition-opacity duration-200"
             >
-              {t.headerTitle}
+              <Logo size="md" theme={theme} />
             </button>
             
             <div className="flex items-center gap-4">

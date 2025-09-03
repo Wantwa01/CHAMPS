@@ -1,6 +1,7 @@
 import React from 'react';
 import { TranslationSet } from '../App';
 import { FacebookIcon, TwitterIcon, LinkedInIcon, InstagramIcon } from './Icons';
+import Logo from './Logo';
 
 interface FooterProps {
     t: TranslationSet;
@@ -13,7 +14,9 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
                 <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                     {/* About */}
                     <div className="md:col-span-2">
-                        <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 mb-4">{t.headerTitle}</h3>
+                        <div className="mb-4">
+                            <Logo size="md" theme="light" />
+                        </div>
                         <p className="text-slate-600 dark:text-slate-400 max-w-md">{t.footerAbout}</p>
                     </div>
 

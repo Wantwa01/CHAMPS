@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { EyeIcon, EyeSlashIcon, LockIcon, UserIcon, ArrowRightIcon, SunIcon, MoonIcon } from './Icons';
 import { Language, Theme, TranslationSet } from '../App';
 import { useAuth } from './DashboardApp';
+import Logo from './Logo';
 
 interface LoginPageProps {
   language: Language;
@@ -12,6 +13,7 @@ interface LoginPageProps {
   onLoginSuccess: () => void;
   onBackToHome: () => void;
   onSignUp?: () => void;
+  isFromBooking?: boolean;
 }
 
 const LoginPage: React.FC<LoginPageProps> = ({
@@ -22,7 +24,8 @@ const LoginPage: React.FC<LoginPageProps> = ({
   toggleTheme,
   onLoginSuccess,
   onBackToHome,
-  onSignUp
+  onSignUp,
+  isFromBooking
 }) => {
   const { login, loading, error } = useAuth();
   const [formData, setFormData] = useState({
@@ -118,9 +121,9 @@ const LoginPage: React.FC<LoginPageProps> = ({
           <div className="flex items-center justify-between h-16">
             <button
               onClick={onBackToHome}
-              className="text-xl font-bold text-slate-900 dark:text-slate-100 hover:text-blue-500 dark:hover:text-blue-400 transition-colors duration-200"
+              className="hover:opacity-80 transition-opacity duration-200"
             >
-              {t.headerTitle}
+              <Logo size="md" theme={theme} />
             </button>
             
             <div className="flex items-center gap-4">
@@ -175,6 +178,15 @@ const LoginPage: React.FC<LoginPageProps> = ({
               <p className="text-slate-600 dark:text-slate-400">
                 {t.loginSubtitle}
               </p>
+              
+              {/* Booking Flow Message */}
+              {isFromBooking && (
+                <div className="mt-4 bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-3">
+                  <p className="text-sm text-blue-800 dark:text-blue-200">
+                    🎯 <strong>Appointment Available!</strong> After logging in, you can complete your appointment booking and download your receipt.
+                  </p>
+                </div>
+              )}
             </div>
 
             {/* Login Form */}
