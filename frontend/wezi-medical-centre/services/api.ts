@@ -1,5 +1,15 @@
+// Extend ImportMeta to include 'env' property for Vite
+declare global {
+  interface ImportMeta {
+    readonly env: {
+      VITE_API_URL?: string;
+      [key: string]: any;
+    };
+  }
+}
+
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
 
 // API Response Types
 export interface ApiResponse<T = any> {
@@ -192,4 +202,3 @@ class ApiClient {
 export const apiClient = new ApiClient(API_BASE_URL);
 
 // Export types for use in components
-export type { ApiError };

@@ -137,11 +137,21 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
       // Show success message and redirect to login
       alert('Registration successful! Please log in with your credentials.');
       onRegistrationSuccess();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Registration failed');
-    } finally {
-      setLoading(false);
-    }
+    } catch (err: any) {
+  // Field-specific backend errors
+  if (err.response?.data?.errors) {
+    setErrors(err.response.data.errors); // display inline under each field
+  } 
+  // General backend error
+  else if (err.response?.data?.message) {
+    setError(err.response.data.message); // show in general error box
+  } 
+  // Fallback
+  else {
+    setError(err.message || 'Registration failed');
+  }
+}
+
   };
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
