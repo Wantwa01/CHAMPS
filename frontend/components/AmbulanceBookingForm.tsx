@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
-import { AmbulanceRequest } from '../types';
+// Define the AmbulanceRequest type here since '../types' is missing
+export interface AmbulanceRequest {
+  id: string;
+  location: string;
+  contact: string;
+  details: string;
+  priority: 'low' | 'medium' | 'high';
+  status: 'pending' | 'dispatched' | 'completed';
+}
 import { Icon } from './Icon';
 
 interface AmbulanceBookingFormProps {

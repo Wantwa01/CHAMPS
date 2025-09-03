@@ -3,10 +3,6 @@ import { PatientView, User, Role, AdminStats, DoctorAppointment, AmbulanceReques
 import { Sidebar } from './Sidebar';
 import { DashboardHeader } from './DashboardHeader';
 import { Dashboard } from './Dashboard';
-import DoctorDashboard from './DoctorDashboard';
-import SuperAdminDashboard from './SuperAdminDashboard';
-import AmbulanceDashboard from './AmbulanceDashboard';
-import GuardianDashboard from './GuardianDashboard';
 import { Icon } from './Icon';
 import { authService } from '../services/authService';
 
@@ -386,26 +382,19 @@ const AppLayout: React.FC<{
           default: return <Dashboard user={user} setActiveView={v => setActiveView(v as PatientView)} activeAmbulanceRequest={activeAmbulanceRequestForPatient} onCompleteAmbulanceRun={onCompleteAmbulanceRun} />;
         }
       case Role.DOCTOR:
-      case Role.STAFF:
         switch(activeView) {
-            case 'dashboard': return <DoctorDashboard user={user} />;
-            default: return <DoctorDashboard user={user} />;
+            case 'dashboard': return <DoctorDashboard />;
+            default: return <MockFeatureViewer title={activeView} />;
         }
       case Role.ADMIN:
-      case Role.SUPERADMIN:
         switch(activeView) {
-            case 'dashboard': return <SuperAdminDashboard user={user} />;
-            default: return <SuperAdminDashboard user={user} />;
+            case 'dashboard': return <AdminDashboard />;
+            default: return <MockFeatureViewer title={activeView} />;
         }
       case Role.AMBULANCE:
         switch(activeView) {
-            case 'dashboard': return <AmbulanceDashboard user={user} />;
-            default: return <AmbulanceDashboard user={user} />;
-        }
-      case Role.GUARDIAN:
-        switch(activeView) {
-            case 'dashboard': return <GuardianDashboard user={user} />;
-            default: return <GuardianDashboard user={user} />;
+            case 'dashboard': return <AmbulanceDashboard requests={ambulanceRequests} />;
+            default: return <MockFeatureViewer title={activeView} />;
         }
       default:
         return <p>No dashboard available for this role.</p>;
@@ -419,17 +408,6 @@ const AppLayout: React.FC<{
             : `${user.role.charAt(0).toUpperCase() + user.role.slice(1)} Dashboard`;
       }
       return activeView.replace('_', ' ');
-  }
-
-  // Special layout for SuperAdmin - no sidebar, no background
-  if (user.role === Role.SUPERADMIN) {
-    return (
-      <div className="min-h-screen bg-slate-100 font-sans">
-        <div key={activeView} className="animate-fade-in-main">
-          {renderContent()}
-        </div>
-      </div>
-    );
   }
 
   return (

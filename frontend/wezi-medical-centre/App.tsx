@@ -1,13 +1,12 @@
 
 import React, { useState, useEffect, useRef } from 'react';
-import { GoogleGenAI } from "@google/genai";
 import Header from './components/Header';
 import Footer from './components/Footer';
 import LoginPage from './components/LoginPage';
 import RegistrationPage from './components/RegistrationPage';
 import { AuthProvider, useAuth } from './components/DashboardApp';
 import DashboardWrapper from './components/DashboardWrapper';
-import { StethoscopeIcon, AmbulanceIcon, CalendarIcon, ChatIcon, MapPinIcon, UserIcon, MapIcon } from './components/Icons';
+import { StethoscopeIcon, AmbulanceIcon, CalendarIcon, ChatIcon, MapPinIcon, UserIcon } from './components/Icons';
 import Logo from './components/Logo';
 import { User, Role, AmbulanceRequest } from './types';
 import DirectionsModal from './components/DirectionsModal';
@@ -340,10 +339,8 @@ const AppContent: React.FC = () => {
 
   const t = translations[language];
 
-  let ai: GoogleGenAI | null = null;
-  // Initialize Gemini AI with the provided API key
-  const GEMINI_API_KEY = 'AIzaSyD3PiT1heCzDzjqOwH5yIpA_MsDGsil5Jk';
-  ai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+  // AI functionality disabled for now
+  const ai = null;
   
   useEffect(() => {
     const savedTheme = localStorage.getItem('theme') as Theme | null;
@@ -405,53 +402,34 @@ const AppContent: React.FC = () => {
   
   const handleSendMessage = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!userMessage.trim() || !ai) return;
+    if (!userMessage.trim()) return;
 
     const newUserMessage: ChatMessage = { role: 'user', text: userMessage };
     setChatHistory(prev => [...prev, newUserMessage]);
     setUserMessage('');
     setIsLoading(true);
 
-    try {
-      const response = await ai.models.generateContent({
-        model: "gemini-2.5-flash",
-        contents: userMessage,
-        config: {
-          systemInstruction: `You are a helpful patient guidance assistant for Wezi Medical Centre, a hospital in Mzuzu, Malawi. Your primary role is to guide patients to the right departments and provide contact information when they need counseling or other services.
+    // Simulate AI response with helpful information
+    setTimeout(() => {
+      const helpfulResponse = `Thank you for your message: "${userMessage}"
 
-IMPORTANT: Do NOT provide medical advice, diagnoses, or treatment recommendations. Your job is to direct patients to the appropriate medical professionals.
+For assistance, please contact our departments directly:
 
-Your responsibilities:
-1. Guide patients to the correct department based on their needs
-2. Provide contact numbers for specific services
-3. Direct patients to counseling services and mental health support
-4. Explain where to go for different types of care
-5. Be friendly, professional, and helpful
+🏥 Emergency Department: +265 1 123 456 (24/7)
+🏥 Outpatient Department: +265 1 123 457
+🏥 Admissions: +265 1 123 458
+🏥 Antenatal Care: +265 1 123 459
+🏥 Mental Health & Counseling: +265 1 123 461
+🏥 Pharmacy: +265 1 123 462
+🏥 Laboratory: +265 1 123 463
+🏥 Radiology: +265 1 123 464
 
-Available Departments and Services:
-- Emergency Department: Ground Floor, West Wing (24/7) - Call: +265 1 123 456
-- Outpatient Department (OPD): Ground Floor, East Wing - Call: +265 1 123 457
-- Admissions/Inpatient: First Floor, Main Lobby - Call: +265 1 123 458
-- Antenatal Care: Second Floor, Women's Health Wing - Call: +265 1 123 459
-- Surgical Theatre: Third Floor, Restricted Access - Call: +265 1 123 460
-- Mental Health & Counseling: Second Floor, East Wing - Call: +265 1 123 461
-- Pharmacy: Ground Floor, Near Reception - Call: +265 1 123 462
-- Laboratory: Ground Floor, Near Reception - Call: +265 1 123 463
-- Radiology: Basement Level - Call: +265 1 123 464
+Our staff will be happy to assist you with your specific needs.`;
 
-For counseling and mental health support, direct patients to the Mental Health & Counseling department or provide the contact number. Always encourage patients to speak with qualified medical professionals for their specific needs.`,
-        },
-      });
-      
-      const modelResponse: ChatMessage = { role: 'model', text: response.text };
+      const modelResponse: ChatMessage = { role: 'model', text: helpfulResponse };
       setChatHistory(prev => [...prev, modelResponse]);
-    } catch (error) {
-      console.error("Error generating content:", error);
-      const errorResponse: ChatMessage = { role: 'model', text: "Sorry, I'm having trouble connecting right now. Please try again later." };
-      setChatHistory(prev => [...prev, errorResponse]);
-    } finally {
       setIsLoading(false);
-    }
+    }, 1000);
   };
 
   // Render login page if current page is login
@@ -523,7 +501,7 @@ For counseling and mental health support, direct patients to the Mental Health &
           className={`grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 max-w-5xl mx-auto mb-20 md:mb-24 transition-all duration-700 ease-out ${areQuickActionsVisible ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-5'}`}
         >
           <QuickActionCard 
-            icon={<MapIcon />} 
+            icon={<MapPinIcon />} 
             title={t.directions} 
             onClick={() => setShowDirectionsModal(true)}
           />

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>React Test</title>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+</head>
+
+<body>
+    <div id="root"></div>
+    <script>
+        console.log('React available:', typeof React);
+        console.log('ReactDOM available:', typeof ReactDOM);
+
+        const TestComponent = () => {
+            return React.createElement('div', {
+                    style: {
+                        padding: '20px',
+                        backgroundColor: 'lightblue',
+                        color: 'black'
+                    }
+                },
+                React.createElement('h1', null, 'React Test Working!'),
+                React.createElement('p', null, 'This is a simple test to verify React is loading.')
+            );
+        };
+
+        const rootElement = document.getElementById('root');
+        console.log('Root element found:', rootElement);
+
+        if (rootElement && React && ReactDOM) {
+            const root = ReactDOM.createRoot(rootElement);
+            root.render(React.createElement(TestComponent));
+            console.log('React component rendered successfully');
+        } else {
+            console.error('Missing dependencies:', {
+                rootElement,
+                React,
+                ReactDOM
+            });
+        }
+    </script>
+</body>
+
+</html>

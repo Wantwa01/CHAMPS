@@ -444,9 +444,9 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
                   Password
                 </label>
                 <div className="relative">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <LockIcon className="h-5 w-5 text-slate-400 dark:text-slate-500" />
-                  </div>
+                    <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <LockIcon />
+                    </div>
                   <input
                     id="password"
                     name="password"
@@ -487,7 +487,7 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
                 </label>
                 <div className="relative">
                   <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <LockIcon className="h-5 w-5 text-slate-400 dark:text-slate-500" />
+                    <LockIcon />
                   </div>
                   <input
                     id="confirmPassword"
@@ -534,10 +534,10 @@ const RegistrationPage: React.FC<RegistrationPageProps> = ({
                     Creating Account...
                   </>
                 ) : (
-                  <>
-                    Create Account
-                    <ArrowRightIcon className="h-5 w-5" />
-                  </>
+                    <>
+                      Create Account
+                      <ArrowRightIcon />
+                    </>
                 )}
               </button>
             </form>

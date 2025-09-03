@@ -1,15 +1,8 @@
-// Extend ImportMeta to include 'env' property for Vite
-declare global {
-  interface ImportMeta {
-    readonly env: {
-      VITE_API_URL?: string;
-      [key: string]: any;
-    };
-  }
-}
+// Remove custom ImportMeta and ImportMetaEnv declarations here.
+// These should be placed in a vite-env.d.ts file at the project root.
 
 // API Configuration
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000';
 
 // API Response Types
 export interface ApiResponse<T = any> {
@@ -67,8 +60,10 @@ class ApiClient {
     };
 
     try {
+      console.debug('[api.request] →', { url, method: config.method || 'GET', body: options.body && JSON.parse(options.body as string) });
       const response = await fetch(url, config);
       const data = await response.json();
+      console.debug('[api.request] ←', { url, status: response.status, ok: response.ok, data });
 
       if (!response.ok) {
         throw {
@@ -82,18 +77,20 @@ class ApiClient {
     } catch (error) {
       if (error instanceof TypeError) {
         // Network error
+        console.error('[api.request] Network error', { url, error });
         throw {
           message: 'Network error. Please check your connection.',
           status: 0,
         } as ApiError;
       }
+      console.error('[api.request] Error', { url, error });
       throw error;
     }
   }
 
   // Authentication Methods
   async login(username: string, password: string): Promise<ApiResponse> {
-    const response = await this.request('/auth/login', {
+    const response = await this.request('/api/auth/login', {
       method: 'POST',
       body: JSON.stringify({ username, password }),
     });
@@ -113,7 +110,7 @@ class ApiClient {
     passportNumber?: string;
     password: string;
   }): Promise<ApiResponse> {
-    return this.request('/auth/register/adult', {
+    return this.request('/api/auth/register/adult', {
       method: 'POST',
       body: JSON.stringify({
         role: 'patient_adult',
@@ -131,7 +128,7 @@ class ApiClient {
     passportNumber?: string;
     password: string;
   }): Promise<ApiResponse> {
-    return this.request('/auth/register/guardian', {
+    return this.request('/api/auth/register/guardian', {
       method: 'POST',
       body: JSON.stringify({
         role: 'guardian',
@@ -141,21 +138,21 @@ class ApiClient {
   }
 
   async forgotPassword(phone: string): Promise<ApiResponse> {
-    return this.request('/auth/forgot-password', {
+    return this.request('/api/auth/forgot-password', {
       method: 'POST',
       body: JSON.stringify({ phone }),
     });
   }
 
   async verifyOtp(phone: string, otp: string): Promise<ApiResponse> {
-    return this.request('/auth/verify-otp', {
+    return this.request('/api/auth/verify-otp', {
       method: 'POST',
       body: JSON.stringify({ phone, otp }),
     });
   }
 
   async resetPassword(phone: string, newPassword: string): Promise<ApiResponse> {
-    return this.request('/auth/reset-password', {
+    return this.request('/api/auth/reset-password', {
       method: 'POST',
       body: JSON.stringify({ phone, newPassword }),
     });
@@ -163,6 +160,34 @@ class ApiClient {
 
   async logout(): Promise<void> {
     this.removeToken();
+  }
+
+  // Appointment Methods
+  async getDoctors(): Promise<ApiResponse> {
+    return this.request('/api/appointments/doctors', { method: 'GET' });
+  }
+
+  async getDoctorSlots(doctorId: string, date: string): Promise<ApiResponse> {
+    return this.request(`/api/appointments/doctors/${doctorId}/slots?date=${date}`, { method: 'GET' });
+  }
+
+  async bookAppointment(appointmentData: {
+    doctorId: string;
+    date: string;
+    time: string;
+  }): Promise<ApiResponse> {
+    return this.request('/api/appointments', {
+      method: 'POST',
+      body: JSON.stringify(appointmentData),
+    });
+  }
+
+  async getUserAppointments(): Promise<ApiResponse> {
+    return this.request('/api/appointments', { method: 'GET' });
+  }
+
+  async cancelAppointment(appointmentId: string): Promise<ApiResponse> {
+    return this.request(`/api/appointments/${appointmentId}`, { method: 'DELETE' });
   }
 
   // Utility Methods
